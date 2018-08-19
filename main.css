@@ -1,0 +1,239 @@
+/* Kim, Young Min CS 571 HW8 */
+
+        #top_container {
+            padding-top: 1%;
+            padding-bottom: 1%;
+            background-color: #f5f8fa
+        }
+        #search_form {
+            padding-right: 5%;
+        }
+        
+        #search_form .input-group {
+            width: 90%;
+        }
+        #search_form .glyphicon {
+            color: white;
+        }
+        #search_form .btn {
+            border-radius: 0;
+            background-color: #3b5998
+        }
+        #search_form .btn-block {
+            width: 200%;
+        }
+        #search_form .form-control {
+            border-radius: 0;
+        }
+        
+        #search_clear .btn {
+            border-radius: 0;
+            background-color: white;
+            border-color: #3b5998;
+            color: #3b5998;
+        }
+        
+        .btn{
+            border-radius: 0;
+            background-color: #3b5998;
+        }
+        
+        .nav-tabs.nav-justified > li > a {
+            border-radius: 0;
+            border-bottom-color: #3b5998;
+            border-left-width: 0px;
+            border-right-width: 0px;
+            border-bottom-width: 0px;
+        }
+        
+        .nav-tabs.nav-justified > .active > a, .nav-tabs.nav-justified > .active > a:focus, .nav-tabs.nav-justified > .active > a:hover {
+            border-radius: 0;
+            background-color: #3b5998;
+            border-bottom-color: #3b5998;
+            border-left-width: 0px;
+            border-right-width: 0px;
+            border-bottom-width: 0px;
+            color: white;
+        }
+
+        .prog_div {
+            padding-top: 5%;
+            padding-bottom: 5%;
+        }
+        
+#userContainer {
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+#pageContainer {
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+#eventContainer {
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+#placeContainer {
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+#groupContainer {
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+#favoriteContainer {
+    padding-top: 20px;
+    padding-bottom: 20px;  
+}
+
+.container-fluid.detail_container{
+    padding-top: 20px;
+    padding-bottom: 20px; 
+}
+.panel.panel-default {
+    margin-top: 10px;
+    margin-bottom: 10px; 
+}
+        #sel_type {
+            border-bottom-style: solid;
+            border-bottom-width: 2px;
+            border-bottom-color: #3b5998;
+        }
+        
+        
+        #result_container.container-fluid {
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+        
+        
+        #profile_pic {
+            height: 40px; 
+            width: 40px
+        }
+        
+        #profile_pic_details {
+            height: 40px; 
+            width: 40px
+        }
+        
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .img-rounded {
+            border-radius: 30px;
+        }
+
+        .trans_left.ng-hide-remove {
+          transform: translateX(-300px);
+          -webkit-transform: translateX(-300px);
+          transition-duration: 500ms;
+          -webkit-transition-duration: 500ms;
+          display: block !important;
+          opacity: 1;
+        }
+
+        .trans_left.ng-hide-remove.ng-hide-remove-active {
+          transform: translateX(0);
+          -webkit-transform: translateX(0);
+          opacity: 1;
+        }
+
+        .trans_right.ng-hide-remove {
+          transform: translateX(300px);
+          -webkit-transform: translateX(300px);
+          transition-duration: 500ms;
+          -webkit-transition-duration: 500ms;
+          display: block !important;
+          opacity: 1;
+        }
+
+        .trans_right.ng-hide-remove.ng-hide-remove-active {
+          transform: translateX(0);
+          -webkit-transform: translateX(0);
+          opacity: 1;
+        }
+        
+        .detail_container .panel {
+            border-radius: 0px;
+            margin-bottom: 0px;
+        }
+        .detail_container .panel-heading {
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+        }
+        .detail_container img {
+            padding-left: 9px;
+            padding-right: 9px;
+            padding-top: 9px;
+            padding-bottom: 9px;
+        }
+        .detail_container .well {
+            border-radius: 0px;
+            border: 0px;
+            margin-bottom: 0px;
+            background-color: white;
+            background-image: linear-gradient(to bottom,#ffffff 0,#ffffff 100%);
+            box-shadow: none;
+        }
+        .detail_container .well-sm {
+            background-color: white;
+            padding-bottom: 9px;
+            padding-top: 9px;
+        }
+        
+        .user_detail_header .btn {
+            background-color: white;
+            color: black;
+            border-color: lightgrey;
+            margin-bottom: 10px;
+        }
+
+        .trans_up.ng-hide-remove {
+            transform: translateY(100px);
+            -webkit-transform: translateY(100px);
+            transition-duration: 500ms;
+            -webkit-transition-duration: 500ms;
+            display: block !important;
+            opacity: 0;
+        }
+
+        .trans_up.ng-hide-remove.ng-hide-remove-active {
+            transform: translateY(0);
+            -webkit-transform: translateY(0);
+            opacity: 1;
+        }
+
+        .res_footer .btn {
+            background-color: white;
+            color: black;
+            border-color: lightgrey;
+            border-radius: 4px;
+            width: 100px;
+            margin-bottom: 4px;
+        }
+        
+        
+        .icon-success {
+            color: #EEB211;
+        }
+        
+
+        
+        .btn btn-sm {
+            padding: 0px, 0px;
+        }
+        
+        .btn-default {
+            background-image: linear-gradient(to bottom,#fff 0,#fff 100%);
+        }
+        .btn-default:focus, .btn-default:hover {
+            background-color: #fff;
+            background-position: 0 -15px;
+        }
+
+
+
+

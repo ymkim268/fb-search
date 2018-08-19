@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <!-- Kim, Young Min CS 571 HW8 -->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- angular js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <!-- Include js facebook api -->
+    <script src='http://connect.facebook.net/en_US/all.js'></script>
+    
+    <!-- external js file -->
+    <script src="main.js"> </script>
+    
+    <link rel="stylesheet" type="text/css" href="main.css">
+    
+    
+    <style>
+    </style>
+    
+    
+    
+</head>
+
+    
+<body>
+    <div ng-app="myApp" ng-controller="clickCtrl">
+        
+    <div class="container-fluid" id="top_container">
+        <div class="row">
+            <div class="col-md-3" id="top_title" style="color: #3b5998; font-size: large; margin-top: 9px; margin-bottom: 9px"> FB Search </div>
+            
+            <div class="col-md-9">
+                <div class="row" style="margin-top: 9px; margin-bottom: 9px">
+                    <div class="col-xs-8" id="search_form"> 
+                        <form id="form_search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="keyword" placeholder="type something..." data-toggle="tooltip" data-placement="bottom" title="Please type a keyword">
+                                
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-block" ng-click="clickHandler()"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    
+                    </div>
+                    
+                    <div class="col-xs-4" id="search_clear" >
+                        <button class="btn" ng-click="clickClear()"> Clear </button> 
+                    </div>
+			 </div>
+		  </div>
+	   </div>
+    </div>
+    
+    
+    <div class="container-fluid" id="result_container">
+        <ul class="nav nav-tabs nav-justified" id="sel_type">
+            <li class="active" id="user" value="user"><a href="#users">Users</a></li>
+            <li id="page"><a href="#pages">Pages</a></li>
+            <li id="event"><a href="#events">Events</a></li>
+            <li id="place"><a href="#places">Places</a></li>
+            <li id="group"><a href="#groups">Groups</a></li>
+            <li id="favorite"><a href="#favorites" ng-click="favClickHandler()">Favorites</a></li>
+        </ul>
+
+    <div class="tab-content">
+        <div id="users" class="tab-pane fade in active">
+<!--<h3>USER TABLE HERE</h3>-->
+            
+            
+<div class="container-fluid" id="userContainer" ng-show="showUserSearch">           
+<table class="table table-hover" >
+<tr>
+<th style="border-top: 0px">#</th>
+<th style="border-top: 0px">Profile photo</th>
+<th style="border-top: 0px">Name</th>
+<th style="border-top: 0px">Favorite</th>
+<th style="border-top: 0px">Details</th>
+</tr>
+    
+<tr ng-repeat="item in user_data">
+<td> {{ $index+1 }} </td>
+<td> <div class="img-responsive img-circle" id = "profile_pic" ng-style="{'background-image': 'url(' + item.picture.data.url + ')', 'background-size' : '100%' }"> </div> </td>
+<td> {{ item.name }}</td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="favoriteHandler(item.id, 'user', item.name, item.picture.data.url)"> 
+        <span id="{{'user' + item.id}}" class="glyphicon glyphicon-star-empty" ng-show="showStar"></span> 
+        <!-- <span id="unfav-{{item.id}}" class="glyphicon glyphicon-star icon-success" ng-show="!showStar"></span> -->
+    </button>
+</td>
+<td>
+    <button type="button" class="btn btn-default btn-sm" ng-click="detailHandler(item.id, item.name, item.picture.data.url)"> 
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+    </button>
+</td>  
+</tr>
+</table>
+    
+    
+<div class="res_footer container-fluid">
+    <div class="col-xs-6" style="text-align:right"> <button class="btn" ng-click="prevHandler(fb_user_prev)" ng-show="showUserPrev"> Previous </button> </div>
+    <div id="user_next" class="col-xs-12" style="text-align:center"> <button class="btn" ng-click="nextHandler(fb_user_next)"> Next </button> </div>
+</div>
+    
+</div>
+            
+            
+<div class="container-fluid detail_container trans_left" ng-show="showUserDetail">
+    
+    <div class="col-xs-12 user_detail_header"> 
+        <div class="col-xs-6">
+        <button class="btn btn-sm" ng-click="backHandler()"> <span class="glyphicon glyphicon-chevron-left"> Back </span> </button></div>
+        <div class="col-xs-6" style="text-align: right">
+            <button type="button" class="btn btn-sm" ng-click="detailStarHandler('user', detail_id, detail_name, detail_pic)"> 
+                <span id="userfav" class="glyphicon glyphicon-star-empty"></span> 
+            </button>
+            <button type="button" class="btn btn-sm" ng-click="fbClick(detail_pic, detail_name)" style="height:30px; width:34px" ng-style="{'background-image': 'url(' + 'http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png' + ')', 'background-size' : '50%', 'background-repeat': 'no-repeat', 'background-position': 'center'}">
+            </button>
+        </div>
+    </div>
+    
+<div class="col-md-6 col-xs-12 album_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Albums </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingAlbum" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showAlbumData">
+            <div class="well well-sm" ng-repeat="item in album_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-heading" ng-click="showPic = !showPic"> <a> {{ item.name }}</a> </div>
+                    <div class="checkAlbumContent" ng-show="showAlbumContent(item)">
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_1 }}"> </div>
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_2 }}"> </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoAlbumData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xs-12 post_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Posts </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingPost" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showPostData">
+            <div class="well well-sm" ng-repeat="item in post_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="img-responsive col-xs-3" id = "profile_pic_details" ng-style="{'background-image': 'url(' + post_purl + ')', 'background-size' : '100%' }"> </div>
+                    <div class="col-xs-9"> {{ post_name }} <br> {{ item.time }} </div>
+                </div>
+                    
+                <div class="panel-body"> {{ item.msg }} </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoPostData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+            
+<div class="prog_div">            
+<div class="progress" ng-show="appState == 'showLoading'" style="width:70%; margin:auto;">
+<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+</div>
+</div>
+    
+        </div>
+
+        
+        <div id="pages" class="tab-pane fade">
+<!--<h3>PAGE TABLE HERE</h3>-->
+            
+<div class="container-fluid" id="pageContainer" ng-show="showPageSearch">           
+<table class="table table-hover">
+<tr>
+<th style="border-top: 0px">#</th>
+<th style="border-top: 0px">Profile photo</th>
+<th style="border-top: 0px">Name</th>
+<th style="border-top: 0px">Favorite</th>
+<th style="border-top: 0px">Details</th>
+</tr>
+
+<tr ng-repeat="item in page_data">
+<td> {{ $index+1 }} </td>
+<td> <div class="img-responsive img-circle" id = "profile_pic" ng-style="{'background-image': 'url(' + item.picture.data.url + ')', 'background-size' : '100%' }"> </div> </td>
+<td> {{ item.name }}</td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="favoriteHandler(item.id, 'page', item.name, item.picture.data.url)"> 
+        <span id="{{'page' + item.id}}" class="glyphicon glyphicon-star-empty" ng-show="showStar"></span> 
+        <!-- <span id="unfav-{{item.id}}" class="glyphicon glyphicon-star icon-success" ng-show="!showStar"></span> -->
+    </button>
+</td>
+<td>
+    <button type="button" class="btn btn-default btn-sm" ng-click="detailHandler(item.id, item.name, item.picture.data.url)"> 
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+    </button>
+</td>  
+</tr>
+</table>
+    
+<div class="res_footer container-fluid">
+    <div class="col-xs-6" style="text-align:right"> <button class="btn" ng-click="prevHandler(fb_page_prev)" ng-show="showPagePrev"> Previous </button> </div>
+    <div id="page_next" class="col-xs-12" style="text-align:center"> <button class="btn" ng-click="nextHandler(fb_page_next)"> Next </button> </div>
+</div>
+    
+    
+</div>
+            
+<div class="container-fluid detail_container trans_left" ng-show="showPageDetail">
+    
+    <div class="col-xs-12 user_detail_header"> 
+        <div class="col-xs-6">
+        <button class="btn btn-sm" ng-click="backHandler()"> <span class="glyphicon glyphicon-chevron-left"> Back </span> </button></div>
+        <div class="col-xs-6" style="text-align: right">
+            <button type="button" class="btn btn-sm" ng-click="detailStarHandler('page', detail_id, detail_name, detail_pic)"> 
+                <span id="pagefav" class="glyphicon glyphicon-star-empty"></span> 
+            </button>
+            <button type="button" class="btn btn-sm" ng-click="fbClick(detail_pic, detail_name)" style="height:30px; width:34px" ng-style="{'background-image': 'url(' + 'http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png' + ')', 'background-size' : '50%', 'background-repeat': 'no-repeat', 'background-position': 'center'}">
+            </button>
+        </div>
+    </div>
+    
+<div class="col-md-6 col-xs-12 album_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Albums </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingAlbum" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body>" ng-show="showAlbumData">
+            <div class="well well-sm" ng-repeat="item in album_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-heading" ng-click="showPic = !showPic"> <a> {{ item.name }} </a></div>
+                    <div class="checkAlbumContent" ng-show="showAlbumContent(item)">
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_1 }}"> </div>
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_2 }}"> </div>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoAlbumData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xs-12 post_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Posts </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingPost" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showPostData">
+            <div class="well well-sm" ng-repeat="item in post_data" style="background-image: none">
+                <div class="panel panel-default">
+                
+                <div class="panel-body">
+                    <div class="img-responsive col-xs-3" id = "profile_pic_details" ng-style="{'background-image': 'url(' + post_purl + ')', 'background-size' : '100%' }"> </div>
+                    <div class="col-xs-9"> {{ post_name }} <br> {{ item.time }} </div>
+                </div>
+                    
+                <div class="panel-body"> {{ item.msg }} </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoPostData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+
+<div class="prog_div">
+<div class="progress" ng-show="appState == 'showLoading'" style="width:70%; margin:auto;">
+<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+</div>
+            </div>
+                
+        </div>
+            
+    
+        <div id="events" class="tab-pane fade">
+<!-- <h3>EVENT TABLE HERE</h3> -->     
+            
+<div class="container-fluid" id="eventContainer" ng-show="showEventSearch">           
+<table class="table table-hover">
+<tr>
+<th style="border-top: 0px">#</th>
+<th style="border-top: 0px">Profile photo</th>
+<th style="border-top: 0px">Name</th>
+<th style="border-top: 0px">Favorite</th>
+<th style="border-top: 0px">Details</th>
+</tr>
+
+<tr ng-repeat="item in event_data">
+<td> {{ $index+1 }} </td>
+<td> <div class="img-responsive img-circle" id = "profile_pic" ng-style="{'background-image': 'url(' + item.picture.data.url + ')', 'background-size' : '100%' }"> </div> </td>
+<td> {{ item.name }}</td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="favoriteHandler(item.id, 'event', item.name, item.picture.data.url)"> 
+        <span id="{{'event' + item.id}}" class="glyphicon glyphicon-star-empty" ng-show="showStar"></span> 
+        <!-- <span id="unfav-{{item.id}}" class="glyphicon glyphicon-star icon-success" ng-show="!showStar"></span> -->
+    </button>
+</td>
+    
+<td>
+    <button type="button" class="btn btn-default btn-sm" ng-click="detailHandler(item.id, item.name, item.picture.data.url)"> 
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+    </button>
+</td>  
+</tr>
+</table>
+    
+<div class="res_footer container-fluid">
+    <div class="col-xs-6" style="text-align:right"> <button class="btn" ng-click="prevHandler(fb_event_prev)" ng-show="showEventPrev"> Previous </button> </div>
+    <div id="event_next" class="col-xs-12" style="text-align:center"> <button class="btn" ng-click="nextHandler(fb_event_next)"> Next </button> </div>
+</div>
+    
+</div>
+            
+<div class="container-fluid detail_container trans_left" ng-show="showEventDetail">
+    
+    <div class="col-xs-12 user_detail_header"> 
+        <div class="col-xs-6">
+        <button class="btn btn-sm" ng-click="backHandler()"> <span class="glyphicon glyphicon-chevron-left"> Back </span> </button></div>
+        <div class="col-xs-6" style="text-align: right">
+            <button type="button" class="btn btn-sm" ng-click="detailStarHandler('event', detail_id, detail_name, detail_pic)"> 
+                <span id="eventfav" class="glyphicon glyphicon-star-empty"></span> 
+            </button>
+            <button type="button" class="btn btn-sm" ng-click="fbClick(detail_pic, detail_name)" style="height:30px; width:34px" ng-style="{'background-image': 'url(' + 'http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png' + ')', 'background-size' : '50%', 'background-repeat': 'no-repeat', 'background-position': 'center'}">
+            </button>
+        </div>
+    </div>
+    
+<div class="col-md-6 col-xs-12 album_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Albums </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingAlbum" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body>" ng-show="showAlbumData">
+            <div class="well well-sm" ng-repeat="item in album_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-heading" ng-click="showPic = !showPic"> <a> {{ item.name }} </a> </div>
+                    <div class="checkAlbumContent" ng-show="showAlbumContent(item)">
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_1 }}"> </div>
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_2 }}"> </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoAlbumData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xs-12 post_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Posts </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingPost" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showPostData">
+            <div class="well well-sm" ng-repeat="item in post_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="img-responsive col-xs-3" id = "profile_pic_details" ng-style="{'background-image': 'url(' + post_purl + ')', 'background-size' : '100%' }"> </div>
+                    <div class="col-xs-9"> {{ post_name }} <br> {{ item.time }} </div>
+                </div>
+                    
+                <div class="panel-body"> {{ item.msg }} </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoPostData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+            
+<div class="prog_div">            
+<div class="progress" ng-show="appState == 'showLoading'" style="width:70%; margin:auto;">
+<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+</div>
+            </div>
+      
+        </div>
+        
+        <div id="places" class="tab-pane fade">
+<!-- <h3>PLACE TABLE HERE</h3> -->    
+            
+<div class="container-fluid" id="placeContainer" ng-show="showPlaceSearch">           
+<table class="table table-hover" >
+<tr>
+<th style="border-top: 0px">#</th>
+<th style="border-top: 0px">Profile photo</th>
+<th style="border-top: 0px">Name</th>
+<th style="border-top: 0px">Favorite</th>
+<th style="border-top: 0px">Details</th>
+</tr>
+
+<tr ng-repeat="item in place_data">
+<td> {{ $index+1 }} </td>
+<td> <div class="img-responsive img-circle" id = "profile_pic" ng-style="{'background-image': 'url(' + item.picture.data.url + ')', 'background-size' : '100%' }"> </div> </td>
+<td> {{ item.name }}</td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="favoriteHandler(item.id, 'place', item.name, item.picture.data.url)"> 
+        <span id="{{'place' + item.id}}" class="glyphicon glyphicon-star-empty" ng-show="showStar"></span> 
+        <!-- <span id="unfav-{{item.id}}" class="glyphicon glyphicon-star icon-success" ng-show="!showStar"></span> -->
+    </button>
+</td>    
+<td>
+    <button type="button" class="btn btn-default btn-sm" ng-click="detailHandler(item.id, item.name, item.picture.data.url)"> 
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+    </button>
+</td>  
+</tr>
+</table>
+    
+    
+<div class="res_footer container-fluid">
+    <div class="col-xs-6" style="text-align:right"> <button class="btn" ng-click="prevHandler(fb_place_prev)" ng-show="showPlacePrev"> Previous </button> </div>
+    <div id="place_next" class="col-xs-12" style="text-align:center"> <button class="btn" ng-click="nextHandler(fb_place_next)"> Next </button> </div>
+</div>
+    
+</div>
+            
+            
+<div class="container-fluid detail_container trans_left" ng-show="showPlaceDetail">
+    
+    <div class="col-xs-12 user_detail_header"> 
+        <div class="col-xs-6">
+        <button class="btn btn-sm" ng-click="backHandler()"> <span class="glyphicon glyphicon-chevron-left"> Back </span> </button></div>
+        <div class="col-xs-6" style="text-align: right">
+            <button type="button" class="btn btn-sm" ng-click="detailStarHandler('place', detail_id, detail_name, detail_pic)"> 
+                <span id="placefav" class="glyphicon glyphicon-star-empty"></span> 
+            </button>
+            <button type="button" class="btn btn-sm" ng-click="fbClick(detail_pic, detail_name)" style="height:30px; width:34px" ng-style="{'background-image': 'url(' + 'http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png' + ')', 'background-size' : '50%', 'background-repeat': 'no-repeat', 'background-position': 'center'}">
+            </button>
+        </div>
+    </div>
+    
+<div class="col-md-6 col-xs-12 album_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Albums </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingAlbum" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body>" ng-show="showAlbumData">
+            <div class="well well-sm" ng-repeat="item in album_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-heading" ng-click="showPic = !showPic"> <a> {{ item.name }} </a> </div>
+                    <div class="checkAlbumContent" ng-show="showAlbumContent(item)">
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_1 }}"> </div>
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_2 }}"> </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoAlbumData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xs-12 post_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Posts </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingPost" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showPostData">
+            <div class="well well-sm" ng-repeat="item in post_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="img-responsive col-xs-3" id = "profile_pic_details" ng-style="{'background-image': 'url(' + post_purl + ')', 'background-size' : '100%' }"> </div>
+                    <div class="col-xs-9"> {{ post_name }} <br> {{ item.time }} </div>
+                </div>
+                    
+                <div class="panel-body"> {{ item.msg }} </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoPostData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+
+            <div class="prog_div">
+<div class="progress" ng-show="appState == 'showLoading'" style="width:70%; margin:auto;">
+<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+</div>
+            </div>
+            
+        </div>
+        
+        <div id="groups" class="tab-pane fade">
+<!-- <h3>GROUP TABLE HERE</h3> -->
+            
+<div class="container-fluid" id="groupContainer" ng-show="showGroupSearch">           
+<table class="table table-hover">
+<tr>
+<th style="border-top: 0px">#</th>
+<th style="border-top: 0px">Profile photo</th>
+<th style="border-top: 0px">Name</th>
+<th style="border-top: 0px">Favorite</th>
+<th style="border-top: 0px">Details</th>
+</tr>
+
+<tr ng-repeat="item in group_data">
+<td> {{ $index+1 }} </td>
+<td> <div class="img-responsive img-circle" id = "profile_pic" ng-style="{'background-image': 'url(' + item.picture.data.url + ')', 'background-size' : '100%' }"> </div> </td>
+<td> {{ item.name }}</td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="favoriteHandler(item.id, 'group', item.name, item.picture.data.url)"> 
+        <span id="{{'group' + item.id}}" class="glyphicon glyphicon-star-empty" ng-show="showStar"></span> 
+        <!-- <span id="unfav-{{item.id}}" class="glyphicon glyphicon-star icon-success" ng-show="!showStar"></span> -->
+    </button>
+</td>    
+<td>
+    <button type="button" class="btn btn-default btn-sm" ng-click="detailHandler(item.id, item.name, item.picture.data.url)"> 
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+    </button>
+</td>  
+</tr>
+</table>
+    
+<div class="res_footer container-fluid">
+    <div class=col-xs-6 style="text-align:right"> <button class="btn" ng-click="prevHandler(fb_group_prev)" ng-show="showGroupPrev"> Previous </button> </div>
+    <div id="group_next" class="col-xs-12" style="text-align:center"> <button class="btn" ng-click="nextHandler(fb_group_next)"> Next </button> </div>
+</div>
+</div>
+            
+<div class="container-fluid detail_container trans_left" ng-show="showGroupDetail">
+    
+    <div class="col-xs-12 user_detail_header"> 
+        <div class="col-xs-6">
+        <button class="btn btn-sm" ng-click="backHandler()"> <span class="glyphicon glyphicon-chevron-left"> Back </span> </button></div>
+        <div class="col-xs-6" style="text-align: right">
+            <button type="button" class="btn btn-sm" ng-click="detailStarHandler('group', detail_id, detail_name, detail_pic)"> 
+                <span id="groupfav" class="glyphicon glyphicon-star-empty"></span> 
+            </button>
+            <button type="button" class="btn btn-sm" ng-click="fbClick(detail_pic, detail_name)" style="height:30px; width:34px" ng-style="{'background-image': 'url(' + 'http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png' + ')', 'background-size' : '50%', 'background-repeat': 'no-repeat', 'background-position': 'center'}">
+            </button>
+        </div>
+    </div>
+    
+<div class="col-md-6 col-xs-12 album_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Albums </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingAlbum" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body>" ng-show="showAlbumData">
+            <div class="well well-sm" ng-repeat="item in album_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-heading" ng-click="showPic = !showPic"> <a> {{ item.name }} </a> </div>
+                    <div class="checkAlbumContent" ng-show="showAlbumContent(item)">
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_1 }}"> </div>
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_2 }}"> </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoAlbumData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xs-12 post_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Posts </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingPost" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showPostData">
+            <div class="well well-sm" ng-repeat="item in post_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="img-responsive col-xs-3" id = "profile_pic_details" ng-style="{'background-image': 'url(' + post_purl + ')', 'background-size' : '100%' }"> </div>
+                    <div class="col-xs-9"> {{ post_name }} <br> {{ item.time }} </div>
+                </div>
+                    
+                <div class="panel-body"> {{ item.msg }} </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoPostData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+          <div class="prog_div">  
+<div class="progress" ng-show="appState == 'showLoading'" style="width:70%; margin:auto;">
+<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+</div>
+            </div>
+            
+        </div>
+        
+        <div id="favorites" class="tab-pane fade">
+<!-- <h3>FAV MENU 3 {{ lssize }} </h3> -->
+     
+<div class="container-fluid" id="favoriteContainer" ng-show="showFavTable">           
+<table class="table table-hover">
+<tr>
+<th style="border-top: 0px">#</th>
+<th style="border-top: 0px">Profile photo</th>
+<th style="border-top: 0px">Name</th>
+<th style="border-top: 0px">Type</th>
+<th style="border-top: 0px">Favorite</th>
+<th style="border-top: 0px">Details</th>
+</tr>
+
+<tr ng-repeat="item in fav_data">
+<td> {{ $index+1 }} </td>
+<td> <div class="img-responsive img-circle" id = "profile_pic" ng-style="{'background-image': 'url(' + item.pic + ')', 'background-size' : '100%' }"> </div> </td>
+<td> {{ item.name }} </td>
+<td> {{ item.type }} </td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="removeFavHandler(item.id, item.type)"> 
+        <span class="glyphicon glyphicon-trash"></span> 
+    </button> </td>
+<td> <button type="button" class="btn btn-default btn-sm" ng-click="detailHandler(item.id, item.name, item.pic)"> 
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+    </button> 
+</td>
+</tr>
+    
+</table>
+</div>
+            
+<div class="container-fluid detail_container trans_left" ng-show="showFavoriteDetail">
+    
+    <div class="col-xs-12 user_detail_header"> 
+        <div class="col-xs-6">
+        <button class="btn btn-sm" ng-click="backHandler()"> <span class="glyphicon glyphicon-chevron-left"> Back </span> </button></div>
+        <div class="col-xs-6" style="text-align: right">
+            <button type="button" class="btn btn-sm" ng-click="detailFavStarHandler('favorite', detail_id, detail_name, detail_pic)"> 
+                <span id="favoritefav" class="glyphicon glyphicon-star icon-success"></span> 
+            </button>
+            <button type="button" class="btn btn-sm" ng-click="fbClick(detail_pic, detail_name)" style="height:30px; width:34px" ng-style="{'background-image': 'url(' + 'http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png' + ')', 'background-size' : '50%', 'background-repeat': 'no-repeat', 'background-position': 'center'}">
+            </button>
+        </div>
+    </div>
+    
+<div class="col-md-6 col-xs-12 album_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Albums </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingAlbum" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body>" ng-show="showAlbumData">
+            <div class="well well-sm" ng-repeat="item in album_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-heading" ng-click="showPic = !showPic"> <a> {{ item.name }} </a> </div>
+                    <div class="checkAlbumContent">
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_1 }}"> </div>
+                <div class="panel-body trans_up" ng-show="checkIndex($index, showPic)"> <img class="img-responsive img-rounded" ng-src="{{ item.url_2 }}"> </div>
+                        </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoAlbumData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-xs-12 post_well">
+    <div class="panel panel-default">
+        <div class="panel-heading"> Posts </div>
+        
+        <div class="prog_div" ng-show="showLoadingPost">
+        <div class="progress" ng-show="showLoadingPost" style="width:70%; margin:auto;">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+        </div>
+        </div>
+
+        <div class="panel-body" ng-show="showPostData">
+            <div class="well well-sm" ng-repeat="item in post_data" style="background-image: none">
+                <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="img-responsive col-xs-3" id = "profile_pic_details" ng-style="{'background-image': 'url(' + post_purl + ')', 'background-size' : '100%' }"> </div>
+                    <div class="col-xs-9"> {{ post_name }} <br> {{ item.time }} </div>
+                </div>
+                    
+                <div class="panel-body"> {{ item.msg }} </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="panel-body" ng-show="showNoPostData">
+            <div class="well well-sm" style="background-image: none">
+                <div class="alert alert-warning">
+                  No data found.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+
+<div class="prog_div">
+<div class="progress" ng-show="appState == 'showLoading'" style="width:70%; margin:auto;">
+<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%"> </div>
+</div>
+</div>
+       
+            
+        </div>
+    </div>
+        
+        
+        
+</div>
+        
+        
+</div>   
+    
+    
+   
+
+
+</body>
+</html>
